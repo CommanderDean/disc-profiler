@@ -40,12 +40,12 @@
     <!-- Intro -->
     <section id="introView" class="card view" hidden>
       <h1>Discover your DISC style</h1>
-      <p class="lead">DISC describes four everyday work styles: <strong>D</strong>ominance, <strong>I</strong>nfluence, <strong>S</strong>teadiness and <strong>C</strong>onscientiousness. Everyone uses all four, but most of us lean towards one or two.</p>
+      <p class="lead">DISC describes four everyday work styles. Everyone uses all four, but most of us lean towards one or two.</p>
       <ul class="style-chips" aria-label="The four DISC styles">
-        <li class="chip chip-d"><span>D</span> Direct</li>
-        <li class="chip chip-i"><span>I</span> Enthusiastic</li>
-        <li class="chip chip-s"><span>S</span> Steady</li>
-        <li class="chip chip-c"><span>C</span> Careful</li>
+        <li class="chip chip-d"><span>D</span> Dominance</li>
+        <li class="chip chip-i"><span>I</span> Influence</li>
+        <li class="chip chip-s"><span>S</span> Steadiness</li>
+        <li class="chip chip-c"><span>C</span> Conscientiousness</li>
       </ul>
       <p>This profiler chats with you through ten quick questions to find your style, then coaches you on using it with your team. It takes about 10 minutes.</p>
       <button id="startBtn" class="btn btn-primary btn-large" type="button">Start</button>
@@ -54,7 +54,17 @@
 
     <!-- Chat -->
     <section id="chatView" class="chat view" hidden>
-      <div class="chat-top">
+      <div id="messages" class="messages" aria-live="polite"></div>
+
+      <div id="choices" class="choices" hidden></div>
+
+      <form id="chatForm" class="composer">
+        <label for="userInput" class="sr-only">Your message</label>
+        <textarea id="userInput" rows="1" maxlength="4000" placeholder="Type your answer here…"></textarea>
+        <button id="sendBtn" class="btn btn-primary" type="submit" aria-label="Send">Send</button>
+      </form>
+
+      <div class="chat-footer">
         <div class="progress" id="progressWrap" hidden>
           <div class="progress-label"><span>Your progress</span><span id="progressText">0%</span></div>
           <div class="progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="progressBar">
@@ -63,16 +73,6 @@
         </div>
         <button id="restartBtn" class="link-btn" type="button">Start over</button>
       </div>
-
-      <div id="messages" class="messages" aria-live="polite"></div>
-
-      <div id="choices" class="choices" hidden></div>
-
-      <form id="chatForm" class="composer">
-        <label for="userInput" class="sr-only">Your message</label>
-        <textarea id="userInput" rows="1" maxlength="4000" placeholder="Type your answer, or pick an option above"></textarea>
-        <button id="sendBtn" class="btn btn-primary" type="submit" aria-label="Send">Send</button>
-      </form>
     </section>
   </main>
 
