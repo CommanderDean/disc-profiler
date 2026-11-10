@@ -277,17 +277,7 @@
     msgs.forEach((m, i) => { if (m.classList.contains("msg-bot")) lastBot = i; });
     msgs.forEach((m, i) => {
       m.classList.toggle("is-old", i < lastBot);
-      const current = i === lastBot;
-      m.classList.toggle("is-current", current);
-      const label = m.querySelector(".new-label");
-      if (current && !label) {
-        const tag = document.createElement("span");
-        tag.className = "new-label";
-        tag.textContent = "Latest";
-        m.prepend(tag);
-      } else if (!current && label) {
-        label.remove();
-      }
+      m.classList.toggle("is-current", i === lastBot);
     });
   }
 
@@ -310,8 +300,6 @@
     $("messages").querySelectorAll(".msg-bot").forEach((m) => {
       m.classList.add("is-old");
       m.classList.remove("is-current");
-      const l = m.querySelector(".new-label");
-      if (l) l.remove();
     });
     scrollDown();
   }
