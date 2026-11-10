@@ -248,6 +248,7 @@
       }
     });
     setProgress(lastProgress);
+    highlightLatest();
     // If the last message was from the user (e.g. a failed request), offer a retry
     const last = history[history.length - 1];
     if (last && last.role === "user") addError("The last reply didn't come through.");
@@ -256,16 +257,40 @@
   function renderBot(raw, showChoices) {
     const parsed = parseReply(raw);
     if (parsed.progress !== null) setProgress(parsed.progress);
+    let div = null;
     if (parsed.text) {
-      const div = document.createElement("div");
+      div = document.createElement("div");
       div.className = "msg msg-bot";
       div.innerHTML = renderMarkdown(parsed.text);
       $("messages").appendChild(div);
+      highlightLatest();
     }
     if (showChoices && parsed.choices.length) renderChoices(parsed.choices);
     scrollDown();
     return parsed;
   }
+
+  // Fade everything except the newest AI message (and anything sent after it)
+  function highlightLatest() {
+    const msgs = Array.from($("messages").querySelectorAll(".msg"));
+    let lastBot = -1;
+    msgs.forEach((m, i) => { if (m.classList.contains("msg-bot")) lastBot = i; });
+    msgs.forEach((m, i) => {
+      m.classList.toggle("is-old", i < lastBot);
+      const current = i === lastBot;
+      m.classList.toggle("is-current", current);
+      const label = m.querySelector(".new-label");
+      if (current && !label) {
+        const tag = document.createElement("span");
+        tag.className = "new-label";
+        tag.textContent = "Latest";
+        m.prepend(tag);
+      } else if (!current && label) {
+        label.remove();
+      }
+    });
+  }
+
 
   function renderMarkdown(md) {
     if (window.marked && window.DOMPurify) {
@@ -281,6 +306,13 @@
     div.className = "msg msg-user";
     div.textContent = text;
     $("messages").appendChild(div);
+    // Once the user answers, the previous AI message is no longer "latest"
+    $("messages").querySelectorAll(".msg-bot").forEach((m) => {
+      m.classList.add("is-old");
+      m.classList.remove("is-current");
+      const l = m.querySelector(".new-label");
+      if (l) l.remove();
+    });
     scrollDown();
   }
 
@@ -354,9 +386,14 @@
     $("progressBar").setAttribute("aria-valuenow", String(pct));
   }
 
+  // Scroll to the newest message. Runs again after layout settles
+  // (answer buttons appearing or fonts loading can change the height).
   function scrollDown() {
     const m = $("messages");
-    requestAnimationFrame(() => { m.scrollTop = m.scrollHeight; });
+    const go = () => { m.scrollTop = m.scrollHeight; };
+    requestAnimationFrame(go);
+    setTimeout(go, 60);
+    setTimeout(go, 250);
   }
 
   // ---------- Boot ----------
